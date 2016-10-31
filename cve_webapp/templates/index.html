@@ -1,0 +1,240 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Full Width Pics - Start Bootstrap Template</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="{% static 'static_dirs/css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="{% static 'static_dirs/css/full-width-pics.css' %}" rel="stylesheet">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+
+<!-- Navigation -->
+
+    <div class="container">
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+            <ul class="nav navbar-nav">
+                <li>
+                    <a href="{% url 'get_year' year=2002 %}">2002</a>
+                </li>
+                <li>
+                    <a href="{% url 'get_year' year=2003 %}">2003</a>
+                </li>
+                <li>
+                    <a href="{% url 'get_year' year=2004 %}">2004</a>
+                </li>
+                <li>
+                    <a href="{% url 'get_year' year=2005 %}">2005</a>
+                </li>
+                <li>
+                    <a href="{% url 'get_year' year=2006 %}">2006</a>
+                </li>
+                <li>
+                    <a href="{% url 'get_year' year=2007 %}">2007</a>
+                </li>
+                <li>
+                    <a href="{% url 'get_year' year=2008 %}">2008</a>
+                </li>
+                <li>
+                    <a href="{% url 'get_year' year=2009 %}">2009</a>
+                </li>
+                <li>
+                    <a href="{% url 'get_year' year=2010 %}">2010</a>
+                </li>
+                <li>
+                    <a href="{% url 'get_year' year=2011 %}">2011</a>
+                </li>
+                <li>
+                    <a href="{% url 'get_year' year=2012 %}">2012</a>
+                </li>
+                <li>
+                    <a href="{% url 'get_year' year=2013 %}">2013</a>
+                </li>
+                <li>
+                    <a href="{% url 'get_year' year=2014 %}">2014</a>
+                </li>
+                <li>
+                    <a href="{% url 'get_year' year=2015 %}">2015</a>
+                </li>
+                <li>
+                    <a href="{% url 'get_year' year=2016 %}">2016</a>
+                </li>
+                <li>
+                    <a href="{% url 'get_modified' %}">Modified</a>
+                </li>
+                <li>
+                    <a href="{% url 'get_recent' %}">Recent</a>
+                </li>
+            </ul>
+
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+
+
+<!-- Full Width Image Header with Logo -->
+<!-- Image backgrounds are set within the full-width-pics.css file. -->
+{#    <header class="image-bg-fluid-height">#}
+{#        <img class="img-responsive img-center" src="http://placehold.it/200x200&text=Logo" alt="">#}
+{#    </header>#}
+
+<!-- Content Section -->
+{% block container %}
+<section>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+
+            <a href="{% url 'get_json' year %}" class="btn btn-success btn-lg">Download Json</a>
+
+            <form method="get">
+                Filter by "One field only, combined filters are not allowed":
+                <div class="form-group">
+                    <label>Score(Decimal)</label>
+                     <input type="text" name="score_filter" class="form-control col-xs-3" >
+                </div>
+
+                <div class="form-group">
+                    <label>Affected Product Count(Integer)</label>
+                     <input type="text" name="apc_filter" class="form-control" >
+                </div>
+
+                <button>Submit</button>
+            </form>
+
+                {% if object_list %}
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th style="width:12%">CVE-ID</th>
+                            <th style="width:50%">Summary</th>
+                            <th style="width:12%">Published</th>
+                            <th style="width:12%">Last Modified</th>
+                            <th>Score</th>
+                            <th>Affected Prod. count</th>
+
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                            {% for object in object_list %}
+                                <tr>
+                                    <th scope="row">{{ object.id }}</th>
+                                    <td><a href="{% url 'get_detail' cv_id=object.cve_id %}">{{ object.cve_id }}</a></td>
+                                    <td>{{ object.summary }}</td>
+                                    <td>{{ object.published|date:"Y-m-d" }}</td>
+                                    <td>{{ object.last_modified|date:"Y-m-d" }}</td>
+                                    <td>{{ object.score }}</td>
+                                    <td>{{ object.num_of_affected_products }}</td>
+                                </tr>
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                {% else %}
+                    <h1 class="section-heading">NVD CVE Data Presentation</h1>
+                    <p class="lead section-lead">Annual data list in the above menu links</p>
+
+                {% endif %}
+            </div>
+        </div>
+
+        {% if is_paginated %}
+            <div class="ui__row">
+                <nav class="listing__pagination">
+                    <ul class="pagination">
+                        {% if page_obj.has_previous %}
+                            <li>
+                                <a href="?{{ request.GET.urlencode }}&page={{ page_obj.previous_page_number }}"
+                                   hidefocus="true">«</a></li>
+                        {% endif %}
+                        {% for page in page_obj.paginator.page_range %}
+                            {% ifequal page page_obj.number %}
+                                <li class="active"><a
+                                        href="?{{ request.GET.urlencode }}&page={{ page }}"
+                                        hidefocus="true">{{ page }}</a></li>
+                            {% else %}
+                                <li>
+                                    <a href="?{{ request.GET.urlencode }}&page={{ page }}"
+                                       hidefocus="true">{{ page }}</a>
+                                </li>
+                            {% endifequal %}
+                        {% endfor %}
+                        {% if page_obj.has_next %}
+                            <li>
+                                <a href="?{{ request.GET.urlencode }}&page={{ page_obj.next_page_number }}"
+                                   hidefocus="true">»</a></li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+
+        {% endif %}
+    </div>
+</section>
+
+<!-- Fixed Height Image Aside -->
+<!-- Image backgrounds are set within the full-width-pics.css file. -->
+{#    <aside class="image-bg-fixed-height"></aside>#}
+
+<!-- Content Section -->
+{#    <section>#}
+{#        <div class="container">#}
+{#            <div class="row">#}
+{#                <div class="col-lg-12">#}
+{#                    <h1 class="section-heading">Section Heading</h1>#}
+{#                    <p class="lead section-lead">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>#}
+{#                    <p class="section-paragraph">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid, suscipit, rerum quos facilis repellat architecto commodi officia atque nemo facere eum non illo voluptatem quae delectus odit vel itaque amet.</p>#}
+{#                </div>#}
+{#            </div>#}
+{#            <!-- /.row -->#}
+{#        </div>#}
+{#        <!-- /.container -->#}
+{#    </section>#}
+{% endblock %}
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <p>Copyright &copy; Your Website 2016</p>
+            </div>
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /.container -->
+</footer>
+
+<!-- jQuery -->
+<script src="{% static 'static_dirs/js/jquery.js' %}"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="{% static 'static_dirs/js/bootstrap.min.js' %}"></script>
+
+</body>
+
+</html>

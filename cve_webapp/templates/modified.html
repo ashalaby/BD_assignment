@@ -1,0 +1,78 @@
+{% extends 'index.html' %}
+{% load staticfiles %}
+
+
+{% block container %}
+<section>
+    <div class="container">
+        <p>MODIFIED CVE's</p>
+
+        {% if object_list %}
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th style="width:12%">CVE-ID</th>
+                            <th style="width:50%">Summary</th>
+                            <th style="width:12%">Published</th>
+                            <th style="width:12%">Last Modified</th>
+                            <th>Score</th>
+                            <th>Affected Prod. count</th>
+
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                            {% for object in object_list %}
+                                <tr>
+                                    <th scope="row">{{ object.id }}</th>
+                                    <td><a href="{% url 'get_detail' cv_id=object.cve_id %}">{{ object.cve_id }}</a></td>
+                                    <td>{{ object.summary }}</td>
+                                    <td>{{ object.published|date:"Y-m-d" }}</td>
+                                    <td>{{ object.last_modified|date:"Y-m-d" }}</td>
+                                    <td>{{ object.score }}</td>
+                                    <td>{{ object.num_of_affected_products }}</td>
+                                </tr>
+                            {% endfor %}
+                     </tbody>
+
+                    </table>
+                    {% endif %}
+    {% if is_paginated %}
+            <div class="ui__row">
+                <nav class="listing__pagination">
+                    <ul class="pagination">
+                        {% if page_obj.has_previous %}
+                            <li>
+                                <a href="?{{ request.GET.urlencode }}&page={{ page_obj.previous_page_number }}"
+                                   hidefocus="true">«</a></li>
+                        {% endif %}
+                        {% for page in page_obj.paginator.page_range %}
+                            {% ifequal page page_obj.number %}
+                                <li class="active"><a
+                                        href="?{{ request.GET.urlencode }}&page={{ page }}"
+                                        hidefocus="true">{{ page }}</a></li>
+                            {% else %}
+                                <li>
+                                    <a href="?{{ request.GET.urlencode }}&page={{ page }}"
+                                       hidefocus="true">{{ page }}</a>
+                                </li>
+                            {% endifequal %}
+                        {% endfor %}
+                        {% if page_obj.has_next %}
+                            <li>
+                                <a href="?{{ request.GET.urlencode }}&page={{ page_obj.next_page_number }}"
+                                   hidefocus="true">»</a></li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+
+        {% endif %}
+
+
+    </div>
+
+</section>
+
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends 'index.html' %}
+{% load staticfiles %}
+
+
+{% block container %}
+<section>
+    <div class="container">
+        <h2>Details</h2>
+        <ul>
+                <li><b>CVE-ID: </b> {{ details.cve_id }} </li>
+                <li><b>Summary: </b> {{ details.summary  }} </li>
+                <li><b>Published:</b> {{ details.published  }} </li>
+                <li><b>Last modified:</b> {{ details.last_modified  }} </li>
+                <li><b>Score:</b> {{ details.score  }} </li>
+                <li><b>Number of affected products:</b> {{ details.num_of_affected_products  }} </li>
+                <li><b>Access Vector:</b> {{ details.access_vector  }} </li>
+                <li><b>Access Complexity:</b> {{ details.access_complexity  }} </li>
+                <li><b>Authentication:</b> {{ details.authentication  }} </li>
+                <li><b>Confidentiality impact:</b> {{ details.confidentiality_impact  }} </li>
+                <li><b>Integrity Impact:</b> {{ details.integrity_impact  }} </li>
+                <li><b>Generated on:</b> {{ details.generated_on  }} </li>
+        </ul>
+        <h2>References</h2>
+        <ul>
+            {% for r in ref %}
+                <li><a href="{{ r.url }}">{{ r.url }}</a></li>
+            {% endfor %}
+        </ul>
+        <h2>Affected Products</h2>
+        <ul>
+            {% for p in prod %}
+                <li>{{ p.product }}</li>
+            {% endfor %}
+        </ul>
+
+    </div>
+</section>
+
+
+
+
+{% endblock %}
